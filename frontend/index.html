@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="description" content="APJ Abdul Kalam Technological University (KTU) High-Performance Student Examination Results Portal. Instant sub-second result search and official PDF grade sheet export.">
+  <meta name="theme-color" content="#0F2C59">
+  <title>KTU University Examination Results — APJ Abdul Kalam Technological University</title>
+
+  <!-- Preconnect & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/print.css" media="print, screen">
+  <link rel="icon" type="image/svg+xml" href="/assets/ktu_logo.svg">
+</head>
+<body>
+
+  <!-- Printable Header (Only rendered when printing / PDF export) -->
+  <header class="print-only-header">
+    <img src="/assets/ktu_logo.svg" alt="KTU Emblem" class="print-emblem">
+    <div class="print-uni-title">APJ ABDUL KALAM TECHNOLOGICAL UNIVERSITY</div>
+    <div class="print-uni-sub">CET Campus, Thiruvananthapuram, Kerala - 695016</div>
+    <div class="print-doc-title">PROVISIONAL GRADE CARD / EXAMINATION RESULT</div>
+  </header>
+
+  <!-- App Main Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="/" class="brand-section" title="KTU Results Home">
+        <img src="/assets/ktu_logo.svg" alt="KTU Logo" class="brand-logo" width="44" height="44">
+        <div class="brand-text">
+          <h1>KTU RESULTS</h1>
+          <p>APJ Abdul Kalam Technological University</p>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+          <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+        </button>
+        <a href="/admin" class="admin-link-btn" title="Admin Portal">
+          ⚙️ Admin
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- Hero / Headline -->
+    <section class="hero-banner" id="heroBanner">
+      <div class="hero-badge">⚡ Ultra-Fast Result Engine</div>
+      <h2 class="hero-title">Student Examination Results</h2>
+      <p class="hero-subtitle">Check your university semester examination results instantly with official grade verification.</p>
+    </section>
+
+    <!-- Error / Alert Banner -->
+    <div id="errorBanner" class="error-banner" role="alert">
+      <div class="error-title">
+        <span>⚠️</span> <span id="errorTitle">Result Not Found</span>
+      </div>
+      <p id="errorMessage">Please verify your register number and examination selection.</p>
+    </div>
+
+    <!-- Result Search Card -->
+    <section class="search-card" id="searchCard">
+      <form id="resultSearchForm" onsubmit="return false;" novalidate>
+        <div class="form-grid">
+          
+          <!-- Register Number Input -->
+          <div class="form-group">
+            <label for="registerNumber" class="form-label">KTU Register No.</label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="registerNumber" 
+                name="registerNumber" 
+                class="form-input uppercase" 
+                placeholder="e.g. TVE21CS001" 
+                maxlength="15" 
+                required 
+                autocomplete="off"
+                autocorrect="off"
+                spellcheck="false"
+              >
+            </div>
+          </div>
+
+          <!-- Semester Select -->
+          <div class="form-group">
+            <label for="semesterSelect" class="form-label">Semester</label>
+            <select id="semesterSelect" name="semester" class="form-select">
+              <option value="6">Semester 6 (S6)</option>
+              <option value="4">Semester 4 (S4)</option>
+              <option value="8">Semester 8 (S8)</option>
+              <option value="2">Semester 2 (S2)</option>
+              <option value="1">Semester 1 (S1)</option>
+              <option value="3">Semester 3 (S3)</option>
+              <option value="5">Semester 5 (S5)</option>
+              <option value="7">Semester 7 (S7)</option>
+            </select>
+          </div>
+
+          <!-- Examination Select -->
+          <div class="form-group">
+            <label for="examSelect" class="form-label">Examination</label>
+            <select id="examSelect" name="examId" class="form-select" required>
+              <option value="" disabled selected>Loading active exams...</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Quick-Fill Sample Pills -->
+        <div class="sample-pills-row">
+          <span>Quick Demo:</span>
+          <button type="button" class="pill-btn" onclick="quickFill('TVE21CS001', 'BT_S6_MAY26')">CET (CS) TVE21CS001</button>
+          <button type="button" class="pill-btn" onclick="quickFill('TKM21EC015', 'BT_S6_MAY26')">TKM (EC) TKM21EC015</button>
+          <button type="button" class="pill-btn" onclick="quickFill('GEC21ME032', 'BT_S6_MAY26')">GEC (ME) GEC21ME032</button>
+          <button type="button" class="pill-btn" onclick="quickFill('MEC21CS045', 'BT_S6_MAY26')">MEC (CS) MEC21CS045</button>
+        </div>
+
+        <!-- Search Submit Button -->
+        <button type="submit" id="btnSubmit" class="btn-submit">
+          <span id="btnSpinner" class="spinner" style="display: none;"></span>
+          <span id="btnText">🔍 View Result</span>
+        </button>
+
+      </form>
+    </section>
+
+    <!-- ================= RESULT DISPLAY CONTAINER ================= -->
+    <section id="resultContainer" class="result-container">
+      
+      <!-- Student Profile Card -->
+      <div class="result-header-card">
+        <div class="result-top-bar">
+          <div>
+            <span id="resultBadge" class="result-status-badge status-pass">PASS</span>
+          </div>
+          <div class="cache-indicator" id="cacheIndicator">
+            <span>⚡ Served in <strong id="responseTime">1.2ms</strong> (<span id="sourceTag">Redis Cache</span>)</span>
+          </div>
+        </div>
+
+        <div class="student-info-grid">
+          <div class="info-item">
+            <span class="info-label">Student Full Name</span>
+            <span class="info-value highlight" id="studentName">—</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">KTU Register Number</span>
+            <span class="info-value highlight" id="studentRegNo">—</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Branch / Programme</span>
+            <span class="info-value" id="studentBranch">—</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Institution / College</span>
+            <span class="info-value" id="studentCollege">—</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Examination Session</span>
+            <span class="info-value" id="examTitle">—</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Scheme & Semester</span>
+            <span class="info-value" id="schemeInfo">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Metrics Row -->
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-label">Semester SGPA</div>
+          <div class="metric-val emerald" id="sgpaVal">0.00</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Cumulative CGPA</div>
+          <div class="metric-val gold" id="cgpaVal">0.00</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Credits Earned</div>
+          <div class="metric-val" id="creditsEarnedVal">0 / 0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Overall Status</div>
+          <div class="metric-val" id="summaryStatusVal" style="font-size: 1.35rem;">PASS</div>
+        </div>
+      </div>
+
+      <!-- Subject Grades Table Card -->
+      <div class="table-card">
+        <div class="table-header-title">
+          <span>Subject-Wise Performance</span>
+          <button type="button" class="pill-btn" onclick="openGradingModal()" style="font-size: 0.8rem;">ℹ️ KTU Grading Scale</button>
+        </div>
+        <div class="table-responsive">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th style="width: 15%;">Course Code</th>
+                <th style="width: 45%;">Course Name</th>
+                <th style="width: 10%; text-align: center;">Credits</th>
+                <th style="width: 10%; text-align: center;">Grade</th>
+                <th style="width: 10%; text-align: center;">Grade Point</th>
+                <th style="width: 10%; text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="gradesTableBody">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Action Toolbar -->
+      <div class="action-toolbar">
+        <button type="button" class="btn-action btn-primary-action" onclick="window.print()">
+          🖨️ Print / Save as PDF
+        </button>
+        <button type="button" class="btn-action btn-secondary-action" onclick="copyResultShareLink()">
+          🔗 Copy Result Link
+        </button>
+        <button type="button" class="btn-action btn-secondary-action" onclick="resetSearch()">
+          🔍 Search Another
+        </button>
+      </div>
+
+      <!-- Printable Official Footer -->
+      <div class="print-only-footer">
+        <div class="print-qr-box">
+          <div id="printQrContainer" class="print-qr-img"></div>
+          <div class="print-qr-text">Digitally Verified via KTU Portal<br>Scan to verify authenticity</div>
+        </div>
+        <div class="print-signature-box">
+          <div class="print-signature-line">
+            Controller of Examinations<br>
+            <span style="font-size: 8pt; font-weight: normal;">APJ Abdul Kalam Technological University</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Grading Legend Modal -->
+  <div id="gradingModal" class="modal-overlay" onclick="closeGradingModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); font-weight: 800;">KTU Grading Scale & Point System</h3>
+        <button type="button" class="btn-close-modal" onclick="closeGradingModal()">&times;</button>
+      </div>
+      <table class="results-table" style="font-size: 0.85rem;">
+        <thead>
+          <tr>
+            <th>Grade</th>
+            <th>Grade Points</th>
+            <th>Description</th>
+            <th>Marks Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong class="grade-badge grade-O">O</strong></td><td>10.0</td><td>Outstanding</td><td>≥ 90%</td></tr>
+          <tr><td><strong class="grade-badge grade-A_plus">A+</strong></td><td>9.0</td><td>Excellent</td><td>85% - 89%</td></tr>
+          <tr><td><strong class="grade-badge grade-A">A</strong></td><td>8.5</td><td>Very Good</td><td>80% - 84%</td></tr>
+          <tr><td><strong class="grade-badge grade-B_plus">B+</strong></td><td>8.0</td><td>Good</td><td>70% - 79%</td></tr>
+          <tr><td><strong class="grade-badge grade-B">B</strong></td><td>7.0</td><td>Above Average</td><td>60% - 69%</td></tr>
+          <tr><td><strong class="grade-badge grade-C">C</strong></td><td>6.0</td><td>Average</td><td>50% - 59%</td></tr>
+          <tr><td><strong class="grade-badge grade-P">P</strong></td><td>5.0</td><td>Pass</td><td>45% - 49%</td></tr>
+          <tr><td><strong class="grade-badge grade-F">F</strong></td><td>0.0</td><td>Failed</td><td>< 45%</td></tr>
+          <tr><td><strong class="grade-badge grade-FE">FE</strong></td><td>0.0</td><td>Failed due to Attendance</td><td>—</td></tr>
+          <tr><td><strong class="grade-badge grade-I">I</strong></td><td>0.0</td><td>Course Incomplete</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.85rem;">
+        * SGPA = Σ(Credit × Grade Point) / Σ(Credits). Minimum required SGPA to pass is 5.00 without any active backlogs.
+      </p>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 2000;"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>© 2026 APJ Abdul Kalam Technological University (KTU). All Rights Reserved.</p>
+    <p style="font-size: 0.72rem; margin-top: 0.3rem;">Designed for ultra-high traffic resiliency with multi-tier caching and request coalescing.</p>
+  </footer>
+
+  <!-- App Script -->
+  <script src="/js/app.js"></script>
+</body>
+</html>

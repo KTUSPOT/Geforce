@@ -1,0 +1,22 @@
+register_number,student_name,branch_code,branch_name,institution_code,institution_name,scheme,semester,subject_code,subject_name,credits,grade
+RET21CS001,Abhishek Varma,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST302,Compiler Design,4.0,A+
+RET21CS001,Abhishek Varma,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST304,Computer Graphics and Image Processing,4.0,O
+RET21CS001,Abhishek Varma,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST306,Algorithm Analysis and Design,4.0,A
+RET21CS001,Abhishek Varma,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST312,Foundations of Machine Learning,3.0,A+
+RET21CS001,Abhishek Varma,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,HUT300,Industrial Economics & Foreign Trade,3.0,B+
+RET21CS001,Abhishek Varma,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CSL332,Networking Lab,1.0,O
+RET21CS001,Abhishek Varma,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CSD334,Mini Project,2.0,O
+RET21CS002,Bhavana Nair,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST302,Compiler Design,4.0,B+
+RET21CS002,Bhavana Nair,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST304,Computer Graphics and Image Processing,4.0,A
+RET21CS002,Bhavana Nair,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST306,Algorithm Analysis and Design,4.0,B
+RET21CS002,Bhavana Nair,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CST312,Foundations of Machine Learning,3.0,A
+RET21CS002,Bhavana Nair,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,HUT300,Industrial Economics & Foreign Trade,3.0,A
+RET21CS002,Bhavana Nair,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CSL332,Networking Lab,1.0,A+
+RET21CS002,Bhavana Nair,CSE,Computer Science and Engineering,RET,Rajagiri School of Engineering & Technology,2019,6,CSD334,Mini Project,2.0,A+
+SCM21EC001,Deepak Menon,ECE,Electronics and Communication Engineering,SCM,SCMS School of Engineering and Technology,2019,6,ECT302,Electromagnetics,4.0,A
+SCM21EC001,Deepak Menon,ECE,Electronics and Communication Engineering,SCM,SCMS School of Engineering and Technology,2019,6,ECT304,VLSI Circuit Design,4.0,B+
+SCM21EC001,Deepak Menon,ECE,Electronics and Communication Engineering,SCM,SCMS School of Engineering and Technology,2019,6,ECT306,Information Theory and Coding,4.0,A+
+SCM21EC001,Deepak Menon,ECE,Electronics and Communication Engineering,SCM,SCMS School of Engineering and Technology,2019,6,ECT312,Digital Image Processing,3.0,A
+SCM21EC001,Deepak Menon,ECE,Electronics and Communication Engineering,SCM,SCMS School of Engineering and Technology,2019,6,HUT300,Industrial Economics & Foreign Trade,3.0,B+
+SCM21EC001,Deepak Menon,ECE,Electronics and Communication Engineering,SCM,SCMS School of Engineering and Technology,2019,6,ECL332,Communication Engineering Lab,1.0,O
+SCM21EC001,Deepak Menon,ECE,Electronics and Communication Engineering,SCM,SCMS School of Engineering and Technology,2019,6,ECD334,Mini Project,2.0,O

@@ -1,0 +1,19 @@
+from backend.monitoring.metrics import (
+    HTTP_REQUESTS_TOTAL,
+    HTTP_REQUEST_DURATION_SECONDS,
+    CACHE_HITS_TOTAL,
+    CACHE_MISSES_TOTAL,
+    SINGLEFLIGHT_SAVED_TOTAL,
+    ACTIVE_REQUESTS,
+    export_metrics
+)
+
+__all__ = [
+    "HTTP_REQUESTS_TOTAL",
+    "HTTP_REQUEST_DURATION_SECONDS",
+    "CACHE_HITS_TOTAL",
+    "CACHE_MISSES_TOTAL",
+    "SINGLEFLIGHT_SAVED_TOTAL",
+    "ACTIVE_REQUESTS",
+    "export_metrics"
+]
