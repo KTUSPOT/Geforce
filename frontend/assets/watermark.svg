@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%" opacity="0.04">
+  <circle cx="250" cy="250" r="230" fill="none" stroke="#0F2C59" stroke-width="8"/>
+  <circle cx="250" cy="250" r="210" fill="none" stroke="#0F2C59" stroke-width="3" stroke-dasharray="10,5"/>
+  <circle cx="250" cy="250" r="140" fill="none" stroke="#0F2C59" stroke-width="4"/>
+  <text x="250" y="270" font-family="'Outfit', sans-serif" font-size="80" font-weight="900" fill="#0F2C59" text-anchor="middle" letter-spacing="8">KTU</text>
+  <path d="M250 60 C380 60 440 180 440 250 C440 380 380 440 250 440 C120 440 60 380 60 250 C60 120 120 60 250 60 Z" fill="none" stroke="#0F2C59" stroke-width="2"/>
+</svg>

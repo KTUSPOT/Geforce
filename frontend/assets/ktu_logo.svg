@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ktuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F2C59"/>
+      <stop offset="50%" stop-color="#1E4E8C"/>
+      <stop offset="100%" stop-color="#0B1A30"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Shield -->
+  <path d="M60 6 L106 24 C106 68 84 100 60 114 C36 100 14 68 14 24 Z" fill="url(#ktuGrad)" stroke="url(#goldGrad)" stroke-width="3.5" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.3))"/>
+  
+  <!-- Inner Shield Border -->
+  <path d="M60 14 L98 30 C98 67 78 94 60 106 C42 94 22 67 22 30 Z" fill="none" stroke="rgba(245, 158, 11, 0.4)" stroke-width="1.5" stroke-dasharray="3,2"/>
+  
+  <!-- Central Technological Gear -->
+  <g transform="translate(60,54) scale(0.65)" fill="url(#goldGrad)">
+    <circle cx="0" cy="0" r="14" fill="#0F2C59" stroke="url(#goldGrad)" stroke-width="3"/>
+    <!-- Gear Teeth -->
+    <path d="M-4 -26 L4 -26 L3 -20 L-3 -20 Z"/>
+    <path d="M-4 26 L4 26 L3 20 L-3 20 Z"/>
+    <path d="M-26 -4 L-26 4 L-20 3 L-20 -3 Z"/>
+    <path d="M26 -4 L26 4 L20 3 L20 -3 Z"/>
+    <path d="M-19 -19 L-14 -24 L-10 -19 L-15 -14 Z"/>
+    <path d="M19 19 L14 24 L10 19 L15 14 Z"/>
+    <path d="M-19 19 L-24 14 L-19 10 L-14 15 Z"/>
+    <path d="M19 -19 L24 -14 L19 -10 L14 -15 Z"/>
+  </g>
+
+  <!-- University Torch / Flame of Knowledge -->
+  <path d="M60 30 C64 36 67 42 63 47 C59 52 54 46 60 30 Z" fill="#EF4444"/>
+  <path d="M60 34 C62 38 64 42 61 45 C58 48 56 44 60 34 Z" fill="#F59E0B"/>
+
+  <!-- Academic Book of Wisdom -->
+  <path d="M42 70 Q60 64 60 74 Q60 64 78 70 L78 84 Q60 78 60 88 Q60 78 42 84 Z" fill="#FFFFFF" opacity="0.95"/>
+  <path d="M60 74 L60 88" stroke="#0F2C59" stroke-width="2"/>
+
+  <!-- KTU Text Ribbon -->
+  <rect x="34" y="90" width="52" height="15" rx="3" fill="#B45309" stroke="#FDE68A" stroke-width="1"/>
+  <text x="60" y="101" font-family="'Outfit', 'Inter', sans-serif" font-size="9" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">KTU</text>
+</svg>

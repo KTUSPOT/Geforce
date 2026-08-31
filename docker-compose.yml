@@ -1,0 +1,199 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------
+  # NGINX High-Performance Load Balancer
+  # ---------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: ktu_load_balancer
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      api-1:
+        condition: service_healthy
+      api-2:
+        condition: service_healthy
+      api-3:
+        condition: service_healthy
+    networks:
+      - ktu_network
+
+  # ---------------------------------------------------------
+  # Stateless API Server Replica 1
+  # ---------------------------------------------------------
+  api-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ktu_api_1
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - HOST=0.0.0.0
+      - PORT=8000
+      - WORKERS=4
+      - DATABASE_URL=postgresql://ktu_user:ktupass2026@postgres:5432/ktu_results
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_ENABLED=true
+      - SECRET_KEY=ktu-production-secret-key-high-performance-2026
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - ktu_network
+
+  # ---------------------------------------------------------
+  # Stateless API Server Replica 2
+  # ---------------------------------------------------------
+  api-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ktu_api_2
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - HOST=0.0.0.0
+      - PORT=8000
+      - WORKERS=4
+      - DATABASE_URL=postgresql://ktu_user:ktupass2026@postgres:5432/ktu_results
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_ENABLED=true
+      - SECRET_KEY=ktu-production-secret-key-high-performance-2026
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - ktu_network
+
+  # ---------------------------------------------------------
+  # Stateless API Server Replica 3
+  # ---------------------------------------------------------
+  api-3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ktu_api_3
+    restart: always
+    environment:
+      - ENVIRONMENT=production
+      - HOST=0.0.0.0
+      - PORT=8000
+      - WORKERS=4
+      - DATABASE_URL=postgresql://ktu_user:ktupass2026@postgres:5432/ktu_results
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_ENABLED=true
+      - SECRET_KEY=ktu-production-secret-key-high-performance-2026
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - ktu_network
+
+  # ---------------------------------------------------------
+  # REDIS Distributed In-Memory Cache (L2 Cache)
+  # ---------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: ktu_redis_cache
+    restart: always
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --tcp-keepalive 60
+      --timeout 300
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+    networks:
+      - ktu_network
+
+  # ---------------------------------------------------------
+  # PostgreSQL Production Relational Database
+  # ---------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: ktu_postgres_db
+    restart: always
+    environment:
+      - POSTGRES_USER=ktu_user
+      - POSTGRES_PASSWORD=ktupass2026
+      - POSTGRES_DB=ktu_results
+    command: >
+      postgres
+      -c max_connections=200
+      -c shared_buffers=512MB
+      -c effective_cache_size=1536MB
+      -c work_mem=16MB
+      -c maintenance_work_mem=128MB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ktu_user -d ktu_results"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - ktu_network
+
+  # ---------------------------------------------------------
+  # Prometheus Metrics Scraper & Monitoring
+  # ---------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ktu_prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - ktu_network
+
+volumes:
+  pg_data:
+  redis_data:
+  prometheus_data:
+
+networks:
+  ktu_network:
+    driver: bridge

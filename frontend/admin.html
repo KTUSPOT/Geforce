@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KTU University Examination Controller Portal — High-Throughput Result Publishing & Cache Management">
+  <title>KTU Admin Portal — Result Publication & Traffic Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/ktu_logo.svg">
+
+  <style>
+    .admin-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+    .admin-nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 2px solid var(--border-subtle);
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+    .admin-tab-btn {
+      background: none;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .admin-tab-btn.active {
+      color: var(--primary-light);
+      border-bottom-color: var(--primary-light);
+    }
+    .dropzone {
+      border: 2.5px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      background: var(--bg-surface-subtle);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary-light);
+      background: var(--accent-soft);
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: var(--bg-surface-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 0.75rem 0;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .metric-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #CBD5E1; transition: .3s; border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+      background-color: white; transition: .3s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--success); }
+    input:checked + .slider:before { transform: translateX(20px); }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="/" class="brand-section">
+        <img src="/assets/ktu_logo.svg" alt="KTU Logo" class="brand-logo">
+        <div class="brand-text">
+          <h1>KTU ADMIN STUDIO</h1>
+          <p>Examination Management & Traffic Control</p>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn">🌙 Theme</button>
+        <button id="btnLogout" class="theme-toggle-btn" style="display: none;" onclick="adminLogout()">🚪 Logout</button>
+        <a href="/" class="admin-link-btn">🎓 Student View</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-container">
+
+    <!-- ================= LOGIN SCREEN ================= -->
+    <section id="loginSection" class="search-card" style="max-width: 440px; margin: 2rem auto;">
+      <h2 style="font-family: var(--font-heading); font-weight: 800; margin-bottom: 0.5rem;">Admin Authentication</h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Authorized examination controllers and administrators only.</p>
+      
+      <div id="loginError" class="error-banner" style="margin-bottom: 1rem; padding: 0.75rem;">
+        <span id="loginErrorText">Invalid credentials</span>
+      </div>
+
+      <form id="adminLoginForm">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label" for="adminUsername">Username</label>
+          <input type="text" id="adminUsername" class="form-input" value="admin" required autocomplete="username">
+        </div>
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label" for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" class="form-input" value="ktuadmin2026" required autocomplete="current-password">
+        </div>
+        <button type="submit" id="btnLogin" class="btn-submit" style="margin-top: 0;">
+          <span>🔐 Sign In to Studio</span>
+        </button>
+        <p style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 0.85rem;">
+          Default demo credentials: <code>admin</code> / <code>ktuadmin2026</code>
+        </p>
+      </form>
+    </section>
+
+    <!-- ================= AUTHENTICATED DASHBOARD ================= -->
+    <div id="dashboardSection" style="display: none;">
+
+      <!-- Admin Tabs -->
+      <nav class="admin-nav-tabs">
+        <button class="admin-tab-btn active" onclick="switchAdminTab('monitor')">📊 Live Monitor & Caching</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('upload')">📤 Bulk Result Import</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('exams')">📋 Exam Manager</button>
+      </nav>
+
+      <!-- TAB 1: LIVE TRAFFIC & CACHE MONITOR -->
+      <div id="tab-monitor" class="admin-tab-content">
+        
+        <div class="metric-grid-4">
+          <div class="metric-card">
+            <div class="metric-label">Cache Hit Rate</div>
+            <div class="metric-val emerald" id="statCacheHitRate">100.0%</div>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">L1 Memory + L2 Redis</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">SingleFlight Saved Queries</div>
+            <div class="metric-val gold" id="statCoalesced">0</div>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">Cache Stampedes Prevented</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Total Student Records</div>
+            <div class="metric-val" id="statTotalStudents">0</div>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">Indexed in DB</span>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">L1 Memory Cache Size</div>
+            <div class="metric-val emerald" id="statL1Size">0</div>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">Hot results in RAM (<0.1ms)</span>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header-title">
+            <span>🔥 Rapid Cache Pre-Warming Station</span>
+          </div>
+          <div style="padding: 1.5rem;">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+              Pre-load student results into Redis cache before publishing results to the public. This ensures 100,000+ simultaneous students hit Redis immediately with zero cold-start database lag.
+            </p>
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+              <select id="warmExamSelect" class="form-select" style="max-width: 380px;">
+                <option value="BT_S6_MAY26">B.Tech S6 (R,S) Exam May 2026</option>
+              </select>
+              <button type="button" class="btn-submit" id="btnWarmCache" onclick="triggerCacheWarm()" style="margin-top: 0; width: auto; padding: 0 1.5rem;">
+                🚀 Pre-Warm Redis Cache
+              </button>
+            </div>
+            
+            <div id="warmProgressBox" style="display: none; margin-top: 1.5rem; background: var(--bg-surface-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700;">
+                <span id="warmProgressText">Warming cache...</span>
+                <span id="warmProgressPct">0%</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div id="warmProgressBar" class="progress-bar-fill"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: BULK RESULT IMPORT STUDIO -->
+      <div id="tab-upload" class="admin-tab-content" style="display: none;">
+        <div class="search-card">
+          <h3 style="font-family: var(--font-heading); font-weight: 800; margin-bottom: 0.5rem;">Upload Student Results</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+            Upload CSV or Excel (.xlsx) files containing student grades. Supported fields: <code>register_number, student_name, branch_code, institution_code, semester, subject_code, subject_name, credits, grade</code>.
+          </p>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Target Examination</label>
+            <select id="uploadExamSelect" class="form-select" style="max-width: 400px;"></select>
+          </div>
+
+          <!-- Dropzone -->
+          <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" accept=".csv, .xlsx, .xls" style="display: none;" onchange="handleFileSelected(event)">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📁</div>
+            <h4 style="font-family: var(--font-heading); font-weight: 700;">Click to select file or drag & drop</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">CSV or Excel (.xlsx) up to 50MB</p>
+            <p id="selectedFileLabel" style="font-weight: 700; color: var(--primary-light); margin-top: 0.75rem; display: none;"></p>
+          </div>
+
+          <button type="button" id="btnStartImport" class="btn-submit" onclick="startBulkImport()" style="display: none; margin-top: 1.25rem;">
+            ⚡ Ingest & Process Result Data
+          </button>
+
+          <!-- Upload Progress -->
+          <div id="importProgressBox" style="display: none; margin-top: 1.5rem; background: var(--bg-surface-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700;">
+              <span id="importProgressText">Processing rows in background...</span>
+              <span id="importProgressPct">0%</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div id="importProgressBar" class="progress-bar-fill"></div>
+            </div>
+            <div id="importErrorsBox" style="display: none; margin-top: 1rem; color: var(--danger); font-size: 0.8rem;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 3: EXAM MANAGER -->
+      <div id="tab-exams" class="admin-tab-content" style="display: none;">
+        <div class="table-card">
+          <div class="table-header-title">
+            <span>Examinations & Publication Controls</span>
+          </div>
+          <div class="table-responsive">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Exam Title / Code</th>
+                  <th>Session</th>
+                  <th>Semester</th>
+                  <th style="text-align: center;">Students</th>
+                  <th style="text-align: center;">Pass %</th>
+                  <th style="text-align: center;">Avg SGPA</th>
+                  <th style="text-align: center;">Published Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminExamsTableBody">
+                <!-- Dynamically Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Admin Script -->
+  <script src="/js/admin.js"></script>
+</body>
+</html>
